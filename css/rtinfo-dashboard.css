@@ -1,0 +1,110 @@
+body {
+    padding: 15px;
+}
+
+.node-down {
+    opacity: 0.3;
+}
+
+.glyphicon-text {
+    padding-right: 6px;
+}
+
+.glyphicon-small {
+    font-size: 10px;
+}
+
+.rtinfo {
+    padding-bottom: 10px;
+}
+
+.rtinfo table thead {
+	font-weight: bold;
+	color: #BFBFBF;
+	border-bottom: solid 2px #4D4D4D;
+}
+
+.rtinfo table tbody {
+	font-family: monospace;
+	font-size: 15px;
+    margin-bottom: 0;
+}
+
+.rtinfo table a:link, table a:hover, table a:visited {
+    text-decoration: none !important;
+    font-weight: bold;
+}
+
+.td-14 { width: 14%; }
+.td-10 { width: 10%; }
+.td-8 { width: 8%; }
+.td-6 { width: 6%; }
+.td-5 { width: 5%; }
+.td-3 { width: 3%; }
+
+.table {
+    margin-bottom: 0;
+}
+
+table.connectivity {
+    /* font-size: 13px; */
+    font-family: monospace;
+}
+
+table.connectivity td:first-child {
+    width: 55%;
+}
+
+table.connectivity td:last-child {
+    width: 25%;
+}
+
+table.wireless {
+    font-size: 14px;
+    font-family: monospace;
+}
+
+table.dhcp {
+    font-size: 14px;
+    font-family: monospace;
+}
+
+table.connectivity tr td:last-child {
+    text-align: right;
+}
+
+table.router td:first-child, table.router td:last-child {
+    width: 5%;
+}
+
+table.router td {
+    width: 45%;
+    text-align: center;
+}
+
+@keyframes redshadow {
+    from { text-shadow: 0px 0px 15px #F4A0A0; }
+    to { text-shadow : none; }
+}
+
+.text-danger {
+    animation: redshadow 1s infinite ease-in-out;
+    font-weight: bold;
+}
+
+@keyframes blinker {
+    50% { opacity: 0; }
+}
+
+#disconnected {
+    position: absolute;
+    bottom: 5px;
+    right: 15px;
+    color: #A52A2A;
+    font-weight: bold;
+    animation: blinker 1s linear infinite;
+}
+
+.panel-ping .panel-body {
+    text-align: center;
+}
