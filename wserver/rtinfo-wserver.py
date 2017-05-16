@@ -102,5 +102,3 @@ class RtInfoDashboard():
         #
         loop.run_forever()
 
-rtdashboard = RtInfoDashboard("http://clea.maxux.net:8089/json")
-rtdashboard.run()
