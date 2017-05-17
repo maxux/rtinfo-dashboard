@@ -1,4 +1,4 @@
-# rtindo-dashboard
+# rtinfo-dashboard
 This is an embeded python webserver which fetch rtinfo json from a remote endpoint and forward it as websocket
 
 # Preview
