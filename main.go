@@ -73,8 +73,7 @@ type dashboard struct {
 
 func newDashboard(endpoint string) *dashboard {
 	return &dashboard{
-		endpoint: endpoint,
-		// rtinfo:    interface{}{},
+		endpoint:  endpoint,
 		wsclients: map[string]*websocket.Conn{},
 	}
 }
@@ -131,8 +130,6 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-const pongWait = 5
-
 func wshandler(dashboard *dashboard) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
@@ -143,9 +140,6 @@ func wshandler(dashboard *dashboard) func(w http.ResponseWriter, r *http.Request
 
 		dashboard.wsclients[conn.RemoteAddr().String()] = conn
 		log.Printf("[+] client connected %s\n", conn.RemoteAddr())
-
-		// conn.SetReadDeadline(time.Now().Add(pongWait))
-		// conn.SetPongHandler(func(string) error { conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 
 		for {
 			if _, _, err := conn.NextReader(); err != nil {
