@@ -1,4 +1,4 @@
-//go:generate  go-bindata index.html static/...
+//go:generate  go-bindata ../static/...
 package main
 
 import (
@@ -164,7 +164,7 @@ func main() {
 	http.HandleFunc("/ws", wshandler(dashboard))
 	http.Handle("/",
 		http.FileServer(
-			&assetfs.AssetFS{Asset: Asset, AssetDir: AssetDir, AssetInfo: AssetInfo, Prefix: ""}))
+			&assetfs.AssetFS{Asset: Asset, AssetDir: AssetDir, AssetInfo: AssetInfo, Prefix: "../static"}))
 	if err := http.ListenAndServe(*addr, nil); err != nil {
 		log.Println(err)
 	}
