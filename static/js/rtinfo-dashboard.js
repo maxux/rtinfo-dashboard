@@ -422,7 +422,8 @@ function rtinfo_call(host) {
 var socket;
 
 function connect() {
-    socket = new WebSocket("ws://localhost:8092/");
+    var host = window.location.host
+    socket = new WebSocket("ws://"+host+"/ws");
 
     socket.onopen = function() {
         console.log("websocket open");
@@ -431,7 +432,7 @@ function connect() {
 
     socket.onmessage = function(msg) {
         json = JSON.parse(msg.data);
-        // console.log(json);
+        console.log(json);
 
         switch(json['type']) {
             case "rtinfo":

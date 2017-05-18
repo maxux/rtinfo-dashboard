@@ -101,4 +101,3 @@ class RtInfoDashboard():
         # main loop, let's run everything together
         #
         loop.run_forever()
-
