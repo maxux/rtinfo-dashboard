@@ -423,7 +423,7 @@ var socket;
 
 function connect() {
     var host = window.location.host
-    socket = new WebSocket("ws://"+host+"/ws");
+    socket = new WebSocket("ws://" + host + "/ws");
 
     socket.onopen = function() {
         console.log("websocket open");

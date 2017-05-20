@@ -1,5 +1,5 @@
+import os
 import asyncio
-import websockets
 import requests
 import json
 from sanic import Sanic
@@ -12,8 +12,11 @@ class RtInfoDashboard():
         self.wsclients = set()
         self.rtinfo = {}
 
+        self.thispath = os.path.dirname(os.path.realpath(__file__))
+        self.staticpath = os.path.join(self.thispath, "../static")
+
         self.app = Sanic(__name__)
-        self.app.static("/", "../")
+        self.app.static("/", self.staticpath)
 
     #
     # Websocket
@@ -33,25 +36,6 @@ class RtInfoDashboard():
     async def wspayload(self, websocket, type, payload):
         content = json.dumps({"type": type, "payload": payload})
         await websocket.send(content)
-
-    async def handler(self, websocket, path):
-        self.wsclients.add(websocket)
-
-        print("[+] client connected")
-
-        try:
-            # pushing current data
-            await self.wspayload(websocket, "rtinfo", self.rtinfo)
-
-            while True:
-                if not websocket.open:
-                    break
-
-                await asyncio.sleep(1)
-
-        finally:
-            print("[+] client disconnected")
-            self.wsclients.remove(websocket)
 
     #
     # rtinfo
@@ -75,12 +59,28 @@ class RtInfoDashboard():
         async def httpd_routes_index(request):
             return response.redirect('/index.html')
 
+        @app.websocket('/ws')
+        async def httpd_websocket(request, ws):
+            self.wsclients.add(ws)
+            await self.wspayload(ws, "rtinfo", self.rtinfo)
+
+            try:
+                # infinite pending loop
+                while True:
+                    if not ws.open:
+                        break
+
+                    await asyncio.sleep(1)
+
+            finally:
+                self.wsclients.remove(ws)
+
     def run(self):
         #
         # standard polling handlers
         #
         loop = asyncio.get_event_loop()
-        asyncio.ensure_future(self.rtinfo_handler())
+        asyncio.ensure_future(self.rtinfo_handler(), loop=loop)
 
         #
         # http receiver
@@ -92,12 +92,10 @@ class RtInfoDashboard():
         asyncio.ensure_future(httpd, loop=loop)
 
         #
-        # handle websocket communication
-        #
-        websocketd = websockets.serve(self.handler, '0.0.0.0', 8092)
-        asyncio.ensure_future(websocketd, loop=loop)
-
-        #
         # main loop, let's run everything together
         #
         loop.run_forever()
+
+if __name__ == '__main__':
+    rtdashboard = RtInfoDashboard("http://your.rtinfo.endpoint:8089/json")
+    rtdashboard.run()
