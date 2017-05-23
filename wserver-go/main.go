@@ -153,7 +153,7 @@ func wshandler(dashboard *dashboard) func(w http.ResponseWriter, r *http.Request
 	}
 }
 
-var endpoint = flag.String("endpoint", ":8089", "rtinfo daemon address")
+var endpoint = flag.String("endpoint", "http://localhost:8089/json", "rtinfo daemon address")
 var addr = flag.String("addr", ":8091", "http server address")
 
 func main() {
