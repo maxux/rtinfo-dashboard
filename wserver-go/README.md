@@ -1,12 +1,13 @@
-# rtindo-dashboard
-This project is a fork from https://github.com/maxux/rtinfo-dashboard.  
-It replace the python server with a go server and embeds the web pages of the dashboard in the binary.
-The goal is to make the dashboard really easy to deploy and self-contained
+# rtindo-dashboard (go)
+This a go-lang webserver/websocket-server which embeds the web pages of the dashboard in the binary.
+The goal is to make the dashboard really easy to deploy and self-contained.
 
 ## How to build
 ```shell
+go get -u github.com/jteeuwen/go-bindata/...
 git clone https://github.com/zaibon/rtinfo-dashboard.git
 cd rtinfo-dashboard/wserver-go
+go get -d -u ./...
 go generate
 go build
 ```
