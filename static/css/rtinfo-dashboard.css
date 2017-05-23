@@ -1,3 +1,8 @@
+@font-face {
+	font-family: "DroidSansMono";
+	src: url('../fonts/DroidSansMono.ttf');
+}
+
 body {
     padding: 15px;
 }
@@ -25,8 +30,8 @@ body {
 }
 
 .rtinfo table tbody {
-	font-family: monospace;
-	font-size: 15px;
+	font-family: 'Droid Sans Mono', monospace;
+	font-size: 14px;
     margin-bottom: 0;
 }
 
@@ -40,46 +45,12 @@ body {
 .td-8 { width: 8%; }
 .td-6 { width: 6%; }
 .td-5 { width: 5%; }
+.td-4 { width: 4%; }
 .td-3 { width: 3%; }
+.td-2 { width: 2%; }
 
 .table {
     margin-bottom: 0;
-}
-
-table.connectivity {
-    /* font-size: 13px; */
-    font-family: monospace;
-}
-
-table.connectivity td:first-child {
-    width: 55%;
-}
-
-table.connectivity td:last-child {
-    width: 25%;
-}
-
-table.wireless {
-    font-size: 14px;
-    font-family: monospace;
-}
-
-table.dhcp {
-    font-size: 14px;
-    font-family: monospace;
-}
-
-table.connectivity tr td:last-child {
-    text-align: right;
-}
-
-table.router td:first-child, table.router td:last-child {
-    width: 5%;
-}
-
-table.router td {
-    width: 45%;
-    text-align: center;
 }
 
 @keyframes redshadow {

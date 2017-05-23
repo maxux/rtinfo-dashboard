@@ -7,179 +7,179 @@ var color;
 var root;
 
 function percentstyle(percent) {
-	return 'color: black;';
+    return 'color: black;';
 }
 
 function percentvalue(value, total) {
-	if(total == 0)
-		return 0;
+    if(total == 0)
+        return 0;
 
-	return parseFloat(Math.floor((value / total) * 100));
+    return parseFloat(Math.floor((value / total) * 100));
 }
 
 function colorizesw(value, size) {
-	if(value < 10)
-		return {'class': 'text-muted'};
+    if(value < 10)
+        return {'class': 'text-muted'};
 
     if(value < 2)
-		return {'class': 'text-muted'};
+        return {'class': 'text-muted'};
 
-	if(value < 30)
-		return {'class': 'text-info'};
+    if(value < 30)
+        return {'class': 'text-info'};
 
-	return colorize(value);
+    return colorize(value);
 }
 
 function colorize(value) {
-	if(value < 8)
-		return {'class': 'text-muted'};
+    if(value < 8)
+        return {'class': 'text-muted'};
 
     if(value < 18)
         return {'class': ''};
 
-	if(value < 50)
-		return {'class': 'text-info'};
+    if(value < 50)
+        return {'class': 'text-info'};
 
-	if(value < 80)
-		return {'class': 'text-warning'};
+    if(value < 80)
+        return {'class': 'text-warning'};
 
-	return {'class': 'text-danger'};
+    return {'class': 'text-danger'};
 }
 
 function loadcolor(value, cpu) {
-	if(value < 0.8)
-		return {'class': 'text-muted'};
+    if(value < 0.8)
+        return {'class': 'text-muted'};
 
     if(value < 1.5)
         return {'class': ''};
 
-	if(value < cpu / 4)
-		return {'class': 'text-info'};
+    if(value < cpu / 4)
+        return {'class': 'text-info'};
 
-	if(value < cpu)
-		return {'class': 'text-warning'};
+    if(value < cpu)
+        return {'class': 'text-warning'};
 
-	return {'class': 'text-danger'};
+    return {'class': 'text-danger'};
 }
 
 function autosize(value) {
-	var temp = value / 1024;
-	var unitidx = 2;
+    var temp = value / 1024;
+    var unitidx = 2;
 
-	if(temp > 4096) {
-		temp /= 1024;
-		unitidx = 3;
-	}
+    if(temp > 4096) {
+        temp /= 1024;
+        unitidx = 3;
+    }
 
-	return temp.toFixed(2) + ' ' + units[unitidx];
+    return temp.toFixed(2) + ' ' + units[unitidx];
 }
 
 //
 // return a value prefixed by zero if < 10
 //
 function zerolead(value) {
-	return (value < 10) ? '0' + value : value;
+    return (value < 10) ? '0' + value : value;
 }
 
 //
 // convert a unix timestamp to readable european date/hours
 //
 function unixtime(timestamp) {
-	var date = new Date(timestamp * 1000);
+    var date = new Date(timestamp * 1000);
 
-	var hours = zerolead(date.getHours()) + ':' +
-	            zerolead(date.getMinutes()) + ':' +
-	            zerolead(date.getSeconds());
+    var hours = zerolead(date.getHours()) + ':' +
+                zerolead(date.getMinutes()) + ':' +
+                zerolead(date.getSeconds());
 
-	return hours;
+    return hours;
 }
 
 //
 // compute a scaled size with adapted prefix
 //
 function size(value, total) {
-	uindex = 1;
+    uindex = 1;
 
-	pc = Math.floor((value / total) * 100);
+    pc = Math.floor((value / total) * 100);
 
-	for(; value > 1024; value /= 1024)
-		uindex++;
+    for(; value > 1024; value /= 1024)
+        uindex++;
 
-	text = value.toFixed(2) + ' ' + units[uindex] + (total ? ' (' + pc + ' %)' : '');
+    text = value.toFixed(2) + ' ' + units[uindex] + (total ? ' (' + pc + ' %)' : '');
 
-	return $('<span>', {style: percentstyle(pc)}).html(text);
+    return $('<span>', {style: percentstyle(pc)}).html(text);
 }
 
 function streamsize(value) {
-	uindex = 0;
+    uindex = 0;
 
-	for(; value > 1024; value /= 1024)
-		uindex++;
+    for(; value > 1024; value /= 1024)
+        uindex++;
 
-	text = value.toFixed(2) + ' ' + units[uindex];
+    text = value.toFixed(2) + ' ' + units[uindex];
 
-	pc = ((uindex / rates.length) * 100);
+    pc = ((uindex / rates.length) * 100);
 
-	return $('<span>', {style: percentstyle(pc)}).html(text);
+    return $('<span>', {style: percentstyle(pc)}).html(text);
 }
 
 function rate(value) {
-	value = value / 1024;
-	uindex = 1;
+    value = value / 1024;
+    uindex = 1;
 
-	for(; value > 1024; value /= 1024)
-		uindex++;
+    for(; value > 1024; value /= 1024)
+        uindex++;
 
-	return value.toFixed(2) + ' ' + rates[uindex];
+    return value.toFixed(2) + ' ' + rates[uindex];
 }
 
 function shortrate(value) {
-	value = value / 1024;
-	uindex = 1;
+    value = value / 1024;
+    uindex = 1;
 
-	for(; value > 1024; value /= 1024)
-		uindex++;
+    for(; value > 1024; value /= 1024)
+        uindex++;
 
-	return value.toFixed(2) + ' ' + shortrates[uindex];
+    return value.toFixed(2) + ' ' + shortrates[uindex];
 }
 
 function colorintf(value, maxspeed) {
-	var value = value / 1024 / 1024; // let's compute everything in Mbps
+    var value = value / 1024 / 1024; // let's compute everything in Mbps
 
-	// compute color based on interface speed/capacity
-	// if scale is unknown, setting it to 100 Mbps
-	if(maxspeed == 0)
-		scale = 100;
+    // compute color based on interface speed/capacity
+    // if scale is unknown, setting it to 100 Mbps
+    if(maxspeed == 0)
+        scale = 100;
 
-	// computing percentage of usage
-	var pc = (value / maxspeed) * 100;
+    // computing percentage of usage
+    var pc = (value / maxspeed) * 100;
 
-	if(value < 5)
-		return {'class': ''};
+    if(value < 5)
+        return {'class': ''};
 
-	if(value < 40)
-		return {'class': 'text-info'};
+    if(value < 40)
+        return {'class': 'text-info'};
 
-	if(value < 60)
-		return {'class': 'text-warning'};
+    if(value < 60)
+        return {'class': 'text-warning'};
 
-	return {'class': 'text-danger'};
+    return {'class': 'text-danger'};
 }
 
 function colordisk(value) {
-	// using MB/s
-	value = value / 1024 / 1024;
+    // using MB/s
+    value = value / 1024 / 1024;
 
-	if(value < 1.2)
-		return {'class': ''};
+    if(value < 1.2)
+        return {'class': ''};
 
-	if(value < 20)
-		return {'class': 'text-info'};
+    if(value < 20)
+        return {'class': 'text-info'};
 
-	if(value < 100)
-		return {'class': 'text-warning'};
+    if(value < 100)
+        return {'class': 'text-warning'};
 
-	return {'class': 'text-danger'};
+    return {'class': 'text-danger'};
 }
 
 function colorbattery(battery) {
@@ -225,47 +225,48 @@ function colorhddtemp(text, value) {
 // compute an uptime (days or hours supported)
 //
 function uptime(value) {
-	if((days = value / 86400) > 1)
-		return Math.floor(days) + ' days';
+    if((days = value / 86400) > 1)
+        return Math.floor(days) + ' days';
 
-	return Math.floor(value / 3600) + ' hours';
+    return Math.floor(value / 3600) + ' hours';
 }
 
 //
 // return a celcius degree if exists
 //
 function degree(value, limit) {
-	if(!value)
-		return '<small>-</small>';
+    if(!value)
+        return '<small>-</small>';
 
-	return value + '°C';
+    return value + '°C';
 }
 
 //
 // return formated percent format with different colors
 // scaled with value. optional output text can be used
+// percentage is padded to have fixed length
 //
 function percent(value, extra) {
-	return value + ' %' + ((extra) ? ' (' + extra + ')' : '');
+    return value + ' %' + ((extra) ? ' (' + extra + ')' : '');
 }
 
 //
 // parsing battery rtinfo object
 //
 function battery(battery) {
-	var bat = '';
+    var bat = '';
 
-	if(battery.load == -1)
-		return '<small>[AC]</small>';
+    if(battery.load == -1)
+        return '<small>[AC]</small>';
 
-	if(batpic[battery.status] != undefined)
-		bat = batpic[battery.status] + ' ';
+    if(batpic[battery.status] != undefined)
+        bat = batpic[battery.status] + ' ';
 
     var pc = battery.load;
     if(battery.load < 0 || battery.load > 100)
         pc = 100;
 
-	return bat + percent(pc);
+    return bat + percent(pc);
 }
 
 //
@@ -277,7 +278,7 @@ function summary_node(node, server) {
     if(node.lasttime + 30 < server.servertime)
         status['class'] = 'node-down';
 
-	var tr = $('<tr>', status);
+    var tr = $('<tr>', status);
 
     var status = 'text-success';
     if(node.lasttime + 5 < server.servertime)
@@ -295,55 +296,71 @@ function summary_node(node, server) {
 
     }).tooltip().html(node.hostname);
 
-	tr.append($('<td>', {'class': status}).append(hostname));
+    tr.append($('<td>', {'class': status}).append(hostname));
 
-	var swap = 0;
-	if(node.memory.swap_total > 0)
-		swap = node.memory.swap_total - node.memory.swap_free;
+    var swap = 0;
+    if(node.memory.swap_total > 0)
+        swap = node.memory.swap_total - node.memory.swap_free;
 
-	for(var index in node.loadavg)
-		node.loadavg[index] = parseFloat(node.loadavg[index]).toFixed(2);
+    for(var index in node.loadavg)
+        node.loadavg[index] = parseFloat(node.loadavg[index]).toFixed(2);
 
-	var nbcpu = node.cpu_usage.length - 1;
-	var ram   = percentvalue(node.memory.ram_used, node.memory.ram_total);
-	var swap  = node.memory.swap_total - node.memory.swap_free;
-	var pswap = percentvalue(swap, node.memory.swap_total);
+    var cpunr = node.cpu_usage.length - 1;
+    var ram   = percentvalue(node.memory.ram_used, node.memory.ram_total);
+    var swap  = node.memory.swap_total - node.memory.swap_free;
+    var pswap = percentvalue(swap, node.memory.swap_total);
 
-	tr.append($('<td>', colorize(node.cpu_usage[0]))
-		.html(percent(node.cpu_usage[0]) + ' / ' + nbcpu));
+    tr.append($('<td>', colorize(node.cpu_usage[0]))
+        .html(percent(node.cpu_usage[0])));
 
-	var size = autosize(node.memory.ram_used);
-	tr.append($('<td>', colorize(ram)).html(percent(ram, size)));
+    tr.append($('<td>').html(cpunr));
 
-	var size = autosize(swap);
-	if(node.memory.swap_total > 0)
-		tr.append($('<td>', colorizesw(pswap, swap)).html(percent(pswap, size)));
+    var size = autosize(node.memory.ram_used);
+    tr.append($('<td>', colorize(ram)).html(percent(ram, size)));
 
-	else tr.append($('<td>').html('-'));
+    var size = autosize(swap);
+    if(node.memory.swap_total > 0)
+        tr.append($('<td>', colorizesw(pswap, swap)).html(percent(pswap, size)));
 
-	tr.append($('<td>', loadcolor(node.loadavg[0], nbcpu)).html(node.loadavg[0]));
-	tr.append($('<td>', loadcolor(node.loadavg[1], nbcpu)).html(node.loadavg[1]));
-	tr.append($('<td>', loadcolor(node.loadavg[2], nbcpu)).html(node.loadavg[2]));
-	tr.append($('<td>').html(node.remoteip));
-	tr.append($('<td>').html(unixtime(node.time)));
+    else tr.append($('<td>').html('-'));
 
-	var up = uptime(node.uptime);
-	tr.append($('<td>').html(up));
+    tr.append($('<td>', loadcolor(node.loadavg[0], cpunr)).html(node.loadavg[0]));
+    tr.append($('<td>', loadcolor(node.loadavg[1], cpunr)).html(node.loadavg[1]));
+    tr.append($('<td>', loadcolor(node.loadavg[2], cpunr)).html(node.loadavg[2]));
+    tr.append($('<td>').html(node.remoteip));
+    tr.append($('<td>').html(unixtime(node.time)));
 
-	var bat = battery(node.battery);
-	tr.append($('<td>', colorbattery(node.battery)).html(bat));
+    var up = uptime(node.uptime);
+    tr.append($('<td>').html(up));
+
+    var bat = battery(node.battery);
+    tr.append($('<td>', colorbattery(node.battery)).html(bat));
 
     tr.append($('<td>').html(colorcputemp(degree(node.sensors.cpu.average), node.sensors.cpu.average)));
     tr.append($('<td>').html(colorhddtemp(degree(node.sensors.hdd.average), node.sensors.hdd.average)));
 
+    // disk usage
+    var speed = 0
+    for(var idx in node.disks)
+        speed += node.disks[idx].read_speed + node.disks[idx].write_speed;
 
-	var speed = 0
-	for(var idx in node.disks)
-		speed += node.disks[idx].read_speed + node.disks[idx].write_speed;
+    tr.append($('<td>', colordisk(speed)).html(rate(speed)));
 
-	tr.append($('<td>', colordisk(speed)).html(rate(speed)));
+    // network usage (rx)
+    var speed = 0
+    for(var idx in node.network)
+        speed += node.network[idx].rx_rate;
 
-	return tr;
+    tr.append($('<td>', colorintf(speed, 1000)).html(rate(speed)));
+
+    // network usage (tx)
+    var speed = 0
+    for(var idx in node.network)
+        speed += node.network[idx].tx_rate;
+
+    tr.append($('<td>', colorintf(speed, 1000)).html(rate(speed)));
+
+    return tr;
 }
 
 
@@ -351,28 +368,31 @@ function summary_node(node, server) {
 // build summary table
 //
 function summary(host, server, nodes) {
-	$('#summary-' + host).empty();
-	$('#summary-' + host).css('display', '');
+    $('#summary-' + host).empty();
+    $('#summary-' + host).css('display', '');
 
-	var thead = $('<thead>')
-		.append($('<td>', {'class': 'td-8'}).html('Hostname'))
-		.append($('<td>', {'class': 'td-6'}).html('CPU / Nb'))
-		.append($('<td>', {'class': 'td-10'}).html('RAM'))
-		.append($('<td>', {'class': 'td-10'}).html('SWAP'))
-		.append($('<td>', {'colspan': 3, 'class': 'td-14'}).html('Load Average'))
-		.append($('<td>', {'class': 'td-8'}).html('Remote IP'))
-		.append($('<td>', {'class': 'td-5'}).html('Time'))
-		.append($('<td>', {'class': 'td-5'}).html('Uptime'))
-		.append($('<td>', {'class': 'td-5'}).html('Battery'))
+    var thead = $('<thead>')
+        .append($('<td>', {'class': 'td-8'}).html('Hostname'))
         .append($('<td>', {'class': 'td-3'}).html('CPU'))
-		.append($('<td>', {'class': 'td-3'}).html('Disk'))
-		.append($('<td>', {'class': 'td-10'}).html('DIsk IO (sum)'));
+        .append($('<td>', {'class': 'td-2'}).html('#'))
+        .append($('<td>', {'class': 'td-10'}).html('RAM'))
+        .append($('<td>', {'class': 'td-10'}).html('SWAP'))
+        .append($('<td>', {'colspan': 3, 'class': 'td-10'}).html('Load Average'))
+        .append($('<td>', {'class': 'td-8'}).html('Remote IP'))
+        .append($('<td>', {'class': 'td-5'}).html('Time'))
+        .append($('<td>', {'class': 'td-5'}).html('Uptime'))
+        .append($('<td>', {'class': 'td-5'}).html('Battery'))
+        .append($('<td>', {'class': 'td-4'}).html('CPU'))
+        .append($('<td>', {'class': 'td-4'}).html('Disk'))
+        .append($('<td>', {'class': 'td-8'}).html('Disks I/O'))
+        .append($('<td>', {'class': 'td-8'}).html('Net RX'))
+        .append($('<td>', {'class': 'td-8'}).html('Net TX'));
 
-	$('#summary-' + host).append(thead);
-	$('#summary-' + host).append($('<tbody>'));
+    $('#summary-' + host).append(thead);
+    $('#summary-' + host).append($('<tbody>'));
 
-	for(var n in nodes)
-		$('#summary-' + host + ' tbody').append(summary_node(nodes[n], server));
+    for(var n in nodes)
+        $('#summary-' + host + ' tbody').append(summary_node(nodes[n], server));
 }
 
 //
@@ -382,31 +402,31 @@ function parsing(response, host) {
     // console.log(response);
     var json = response;
 
-	// clearing everyting
-	$('body').attr('class', 'connected');
+    // clearing everyting
+    $('body').attr('class', 'connected');
 
-	//
-	// ordering hostname
-	//
-	var hosts = [];
-	var nodes = [];
+    //
+    // ordering hostname
+    //
+    var hosts = [];
+    var nodes = [];
 
-	for(var x in json.rtinfo)
-		hosts.push(json.rtinfo[x].hostname);
+    for(var x in json.rtinfo)
+        hosts.push(json.rtinfo[x].hostname);
 
-	hosts = hosts.sort();
+    hosts = hosts.sort();
 
-	for(var n in hosts)
-		for(var x in json.rtinfo)
-			if(json.rtinfo[x].hostname == hosts[n])
-				nodes.push(json.rtinfo[x]);
+    for(var n in hosts)
+        for(var x in json.rtinfo)
+            if(json.rtinfo[x].hostname == hosts[n])
+                nodes.push(json.rtinfo[x]);
 
     // console.log(nodes);
 
-	//
-	// iterate over differents part showable/hiddable
-	//
-	summary(host, json, nodes);
+    //
+    // iterate over differents part showable/hiddable
+    //
+    summary(host, json, nodes);
 }
 
 function rtinfo_call(host) {
