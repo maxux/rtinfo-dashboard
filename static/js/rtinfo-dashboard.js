@@ -366,7 +366,7 @@ function summary_node(node, server) {
 
     tr.append($('<td>', colordisk(speed)).html(rate(speed)));
 
-    var iops = ((speed / 1024 / 1024) / 4) * 1024;
+    var iops = parseInt(((speed / 1024 / 1024) / 4) * 1024);
     tr.append($('<td>').html(iops.toLocaleString()));
 
     cluster['disks']['iops'] += iops;
