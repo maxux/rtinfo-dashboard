@@ -4,10 +4,19 @@ var shortrates  = ['b', 'K', 'M', 'G', 'T', 'P'];
 var batpic = ["→", "↓", "↑"];
 
 var cluster = {
+    'cpu': {
+        'cores': 0,
+        'load': 0,
+    },
+    'ram': {
+        'total': 0,
+        'used': 0,
+    },
     'disks': {
         'read': 0,
         'write': 0,
         'iops': 0,
+        'total': 0,
     },
 };
 
@@ -82,6 +91,24 @@ function autosize(value) {
     return temp.toFixed(2) + ' ' + units[unitidx];
 }
 
+function autosize_value(value) {
+    var temp = value / 1024;
+    var unitidx = 2;
+
+    if(temp > 4096) {
+        temp /= 1024;
+        unitidx = 3;
+    }
+
+    var elements = $('<div>')
+        .append($('<span>', {'class': 'value'}).html(temp.toFixed(2)))
+        .append($('<span>').html(' '))
+        .append($('<small>').html(units[unitidx]));
+
+    return elements;
+}
+
+
 //
 // return a value prefixed by zero if < 10
 //
@@ -103,7 +130,7 @@ function unixtime(timestamp) {
 }
 
 function bytestomb(value) {
-    return (value / (1024 * 1024)).toFixed(2);
+    return (value / (1024 * 1024)).toFixed(0).toLocaleString();
 }
 
 //
@@ -325,10 +352,15 @@ function summary_node(node, server) {
     tr.append($('<td>', colorize(node.cpu_usage[0]))
         .html(percent(node.cpu_usage[0])));
 
+    cluster['cpu']['cores'] += cpunr;
+    cluster['cpu']['load'] += node.cpu_usage[0];
     tr.append($('<td>').html(cpunr));
 
     var size = autosize(node.memory.ram_used);
     tr.append($('<td>', colorize(ram)).html(percent(ram, size)));
+
+    cluster['ram']['used'] += node.memory.ram_used;
+    cluster['ram']['total'] += node.memory.ram_total;
 
     /*
     var size = autosize(swap);
@@ -356,17 +388,23 @@ function summary_node(node, server) {
     */
 
     // disk usage
-    var speed = 0
+    var speed_read = 0
+    var speed_write = 0
+
+    cluster['disks']['total'] += node.disks.length;
+
     for(var idx in node.disks) {
         cluster['disks']['read'] += node.disks[idx].read_speed;
         cluster['disks']['write'] += node.disks[idx].write_speed;
 
-        speed += node.disks[idx].read_speed + node.disks[idx].write_speed;
+        speed_read += node.disks[idx].read_speed;
+        speed_write += node.disks[idx].write_speed;
     }
 
-    tr.append($('<td>', colordisk(speed)).html(rate(speed)));
+    tr.append($('<td>', colordisk(speed_read)).html(rate(speed_read)));
+    tr.append($('<td>', colordisk(speed_write)).html(rate(speed_write)));
 
-    var iops = parseInt(((speed / 1024 / 1024) / 4) * 1024);
+    var iops = parseInt((((speed_read + speed_write) / 1024 / 1024) / 4) * 1024);
 
     // assume it's not benchmarking
     // low write is probably not 4 KB test
@@ -379,15 +417,11 @@ function summary_node(node, server) {
 
     // network usage (rx)
     var speed = 0
-    for(var idx in node.network)
+
+    for(var idx in node.network) {
         speed += node.network[idx].rx_rate;
-
-    tr.append($('<td>', colorintf(speed, 1000)).html(rate(speed)));
-
-    // network usage (tx)
-    var speed = 0
-    for(var idx in node.network)
         speed += node.network[idx].tx_rate;
+    }
 
     tr.append($('<td>', colorintf(speed, 1000)).html(rate(speed)));
 
@@ -405,6 +439,11 @@ function summary(host, server, nodes) {
     cluster['disks']['read'] = 0;
     cluster['disks']['write'] = 0;
     cluster['disks']['iops'] = 0;
+    cluster['cpu']['cores'] = 0;
+    cluster['cpu']['load'] = 0;
+    cluster['ram']['total'] = 0;
+    cluster['ram']['used'] = 0;
+    cluster['disks']['total'] = 0;
 
     var thead = $('<thead>')
         .append($('<td>', {'class': 'td-8'}).html('Hostname'))
@@ -419,10 +458,10 @@ function summary(host, server, nodes) {
         // .append($('<td>', {'class': 'td-5'}).html('Battery'))
         // .append($('<td>', {'class': 'td-4'}).html('CPU'))
         // .append($('<td>', {'class': 'td-4'}).html('Disk'))
-        .append($('<td>', {'class': 'td-8'}).html('Disks Thrp'))
+        .append($('<td>', {'class': 'td-8'}).html('Disks Thrp Rd'))
+        .append($('<td>', {'class': 'td-8'}).html('Disks Thrp Wr'))
         .append($('<td>', {'class': 'td-8'}).html('Disks IOPS'))
-        .append($('<td>', {'class': 'td-8'}).html('Net RX'))
-        .append($('<td>', {'class': 'td-8'}).html('Net TX'));
+        .append($('<td>', {'class': 'td-8'}).html('Network'))
 
     $('#summary-' + host).append(thead);
     $('#summary-' + host).append($('<tbody>'));
@@ -430,6 +469,12 @@ function summary(host, server, nodes) {
     for(var n in nodes)
         $('#summary-' + host + ' tbody').append(summary_node(nodes[n], server));
 
+    $('#registered .value').html(nodes.length);
+    $('#nodes-disks .value').html(cluster['disks']['total']);
+    $('#nodes-cpu .value').html(cluster['cpu']['cores']);
+    $('#nodes-cpu-load .value').html((cluster['cpu']['load'] / nodes.length).toFixed(0));
+    $('#nodes-ram').html(autosize_value(cluster['ram']['total']));
+    $('#nodes-ram-load').html(autosize_value(cluster['ram']['used']));
     $('#disk-read .value').html(bytestomb(cluster['disks']['read']));
     $('#disk-write .value').html(bytestomb(cluster['disks']['write']));
     $('#disk-iops .value').html(cluster['disks']['iops'].toLocaleString());

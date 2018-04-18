@@ -14,7 +14,88 @@
 <body>
     <div id="wrapper">
     <div class="container-fluid">
-        <!-- IO Summary -->
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <span class="glyphicon glyphicon-cloud glyphicon-text"></span>
+                            Nodes registered
+                        </h3>
+                    </div>
+                    <div id="registered" class="panel-body value-big">
+                        <span class="value">0</span> <small>clients</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <span class="glyphicon glyphicon-cloud glyphicon-text"></span>
+                            CPU Capacity
+                        </h3>
+                    </div>
+                    <div id="nodes-cpu" class="panel-body value-big">
+                        <span class="value">0</span> <small>threads</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <span class="glyphicon glyphicon-cloud glyphicon-text"></span>
+                            Memory Capacity
+                        </h3>
+                    </div>
+                    <div id="nodes-ram" class="panel-body value-big">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <span class="glyphicon glyphicon-cloud glyphicon-text"></span>
+                            Disks Monitored
+                        </h3>
+                    </div>
+                    <div id="nodes-disks" class="panel-body value-big">
+                        <span class="value">0</span> <small>disks</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <span class="glyphicon glyphicon-cloud glyphicon-text"></span>
+                            CPU Load
+                        </h3>
+                    </div>
+                    <div id="nodes-cpu-load" class="panel-body value-big">
+                        <span class="value">0</span> <small>%</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <span class="glyphicon glyphicon-cloud glyphicon-text"></span>
+                            Memory Load
+                        </h3>
+                    </div>
+                    <div id="nodes-ram-load" class="panel-body value-big">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- i/o summary -->
         <div class="row">
             <div class="col-lg-4">
                 <div class="panel panel-default">
@@ -57,6 +138,8 @@
             </div>
 
         </div>
+
+
 
         <!-- Nodes -->
         <div class="row">
