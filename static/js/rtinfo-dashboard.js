@@ -367,6 +367,12 @@ function summary_node(node, server) {
     tr.append($('<td>', colordisk(speed)).html(rate(speed)));
 
     var iops = parseInt(((speed / 1024 / 1024) / 4) * 1024);
+
+    // assume it's not benchmarking
+    // low write is probably not 4 KB test
+    if(iops > 0 && speed < (4 * 1024 * 1024))
+        iops = 1;
+
     tr.append($('<td>').html(iops.toLocaleString()));
 
     cluster['disks']['iops'] += iops;
