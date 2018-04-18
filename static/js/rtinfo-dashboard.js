@@ -413,8 +413,8 @@ function summary(host, server, nodes) {
         // .append($('<td>', {'class': 'td-5'}).html('Battery'))
         // .append($('<td>', {'class': 'td-4'}).html('CPU'))
         // .append($('<td>', {'class': 'td-4'}).html('Disk'))
-        .append($('<td>', {'class': 'td-8'}).html('Disks I/O'))
-        .append($('<td>', {'class': 'td-8'}).html('Disk IOPS'))
+        .append($('<td>', {'class': 'td-8'}).html('Disks Thrp'))
+        .append($('<td>', {'class': 'td-8'}).html('Disks IOPS'))
         .append($('<td>', {'class': 'td-8'}).html('Net RX'))
         .append($('<td>', {'class': 'td-8'}).html('Net TX'));
 
