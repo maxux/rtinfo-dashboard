@@ -3,6 +3,14 @@ var rates  = ['b/s', 'KiB/s', 'MiB/s', 'GiB/s', 'TiB/s', 'PiB/s'];
 var shortrates  = ['b', 'K', 'M', 'G', 'T', 'P'];
 var batpic = ["→", "↓", "↑"];
 
+var cluster = {
+    'disks': {
+        'read': 0,
+        'write': 0,
+        'iops': 0,
+    },
+};
+
 var color;
 var root;
 
@@ -92,6 +100,10 @@ function unixtime(timestamp) {
                 zerolead(date.getSeconds());
 
     return hours;
+}
+
+function bytestomb(value) {
+    return (value / (1024 * 1024)).toFixed(2);
 }
 
 //
@@ -318,33 +330,46 @@ function summary_node(node, server) {
     var size = autosize(node.memory.ram_used);
     tr.append($('<td>', colorize(ram)).html(percent(ram, size)));
 
+    /*
     var size = autosize(swap);
     if(node.memory.swap_total > 0)
         tr.append($('<td>', colorizesw(pswap, swap)).html(percent(pswap, size)));
 
     else tr.append($('<td>').html('-'));
+    */
 
     tr.append($('<td>', loadcolor(node.loadavg[0], cpunr)).html(node.loadavg[0]));
     tr.append($('<td>', loadcolor(node.loadavg[1], cpunr)).html(node.loadavg[1]));
     tr.append($('<td>', loadcolor(node.loadavg[2], cpunr)).html(node.loadavg[2]));
-    tr.append($('<td>').html(node.remoteip));
+    // tr.append($('<td>').html(node.remoteip));
     tr.append($('<td>').html(unixtime(node.time)));
 
     var up = uptime(node.uptime);
     tr.append($('<td>').html(up));
 
+    /*
     var bat = battery(node.battery);
     tr.append($('<td>', colorbattery(node.battery)).html(bat));
 
     tr.append($('<td>').html(colorcputemp(degree(node.sensors.cpu.average), node.sensors.cpu.average)));
     tr.append($('<td>').html(colorhddtemp(degree(node.sensors.hdd.average), node.sensors.hdd.average)));
+    */
 
     // disk usage
     var speed = 0
-    for(var idx in node.disks)
+    for(var idx in node.disks) {
+        cluster['disks']['read'] += node.disks[idx].read_speed;
+        cluster['disks']['write'] += node.disks[idx].write_speed;
+
         speed += node.disks[idx].read_speed + node.disks[idx].write_speed;
+    }
 
     tr.append($('<td>', colordisk(speed)).html(rate(speed)));
+
+    var iops = ((speed / 1024 / 1024) / 4) * 1024;
+    tr.append($('<td>').html(iops.toLocaleString()));
+
+    cluster['disks']['iops'] += iops;
 
     // network usage (rx)
     var speed = 0
@@ -371,20 +396,25 @@ function summary(host, server, nodes) {
     $('#summary-' + host).empty();
     $('#summary-' + host).css('display', '');
 
+    cluster['disks']['read'] = 0;
+    cluster['disks']['write'] = 0;
+    cluster['disks']['iops'] = 0;
+
     var thead = $('<thead>')
         .append($('<td>', {'class': 'td-8'}).html('Hostname'))
         .append($('<td>', {'class': 'td-3'}).html('CPU'))
         .append($('<td>', {'class': 'td-2'}).html('#'))
         .append($('<td>', {'class': 'td-10'}).html('RAM'))
-        .append($('<td>', {'class': 'td-10'}).html('SWAP'))
+        // .append($('<td>', {'class': 'td-10'}).html('SWAP'))
         .append($('<td>', {'colspan': 3, 'class': 'td-10'}).html('Load Average'))
-        .append($('<td>', {'class': 'td-8'}).html('Remote IP'))
+        // .append($('<td>', {'class': 'td-8'}).html('Remote IP'))
         .append($('<td>', {'class': 'td-5'}).html('Time'))
         .append($('<td>', {'class': 'td-5'}).html('Uptime'))
-        .append($('<td>', {'class': 'td-5'}).html('Battery'))
-        .append($('<td>', {'class': 'td-4'}).html('CPU'))
-        .append($('<td>', {'class': 'td-4'}).html('Disk'))
+        // .append($('<td>', {'class': 'td-5'}).html('Battery'))
+        // .append($('<td>', {'class': 'td-4'}).html('CPU'))
+        // .append($('<td>', {'class': 'td-4'}).html('Disk'))
         .append($('<td>', {'class': 'td-8'}).html('Disks I/O'))
+        .append($('<td>', {'class': 'td-8'}).html('Disk IOPS'))
         .append($('<td>', {'class': 'td-8'}).html('Net RX'))
         .append($('<td>', {'class': 'td-8'}).html('Net TX'));
 
@@ -393,6 +423,10 @@ function summary(host, server, nodes) {
 
     for(var n in nodes)
         $('#summary-' + host + ' tbody').append(summary_node(nodes[n], server));
+
+    $('#disk-read .value').html(bytestomb(cluster['disks']['read']));
+    $('#disk-write .value').html(bytestomb(cluster['disks']['write']));
+    $('#disk-iops .value').html(cluster['disks']['iops'].toLocaleString());
 }
 
 //

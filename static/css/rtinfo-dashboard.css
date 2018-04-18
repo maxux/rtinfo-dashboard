@@ -76,6 +76,11 @@ body {
     animation: blinker 1s linear infinite;
 }
 
-.panel-ping .panel-body {
+.value-big {
     text-align: center;
+    font-size: 2em;
+}
+
+.value-big small {
+    font-size: 0.5em;
 }
