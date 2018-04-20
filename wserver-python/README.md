@@ -11,11 +11,10 @@ This is an embeded python webserver which fetch rtinfo json from a remote endpoi
 
 # Basic setup
 ## Server
-Include `wserver/rtinfo-wserver.py` and instanciate it:
+Import `wserver/rtinfows` and instanciate it:
 ```
-rtdashboard = RtInfoDashboard("http://my.endpoint.server.tld:8089/json")
+import rtinfows
+
+rtdashboard = rtinfows.RtInfoDashboard("http://my.endpoint.server.tld:8089/json")
 rtdashboard.run()
 ```
-
-## Client
-Edit `js/rtinfo-dashboard.js` and change `WebSocket("ws://localhost:8092/");` to your endpoint websocket.
