@@ -97,5 +97,5 @@ class RtInfoDashboard():
         loop.run_forever()
 
 if __name__ == '__main__':
-    rtdashboard = RtInfoDashboard("http://your.rtinfo.endpoint:8089/json")
+    rtdashboard = RtInfoDashboard("http://localhost:8089/json")
     rtdashboard.run()
