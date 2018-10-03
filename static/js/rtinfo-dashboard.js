@@ -527,8 +527,12 @@ function rtinfo_call(host) {
 var socket;
 
 function connect() {
-    var host = window.location.host
-    socket = new WebSocket("ws://" + host + "/ws");
+    var host = window.location.host;
+    if (window.location.protocol == "https:") {
+        socket = new WebSocket("wss://" + host + "/ws");
+    } else {
+        socket = new WebSocket("ws://" + host + "/ws");
+    }
 
     socket.onopen = function() {
         console.log("websocket open");
