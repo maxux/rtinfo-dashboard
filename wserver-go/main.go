@@ -10,6 +10,8 @@ import (
 
 	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/gorilla/websocket"
+
+	_ "net/http/pprof"
 )
 
 type rtinfo struct {
@@ -88,12 +90,12 @@ func (d *dashboard) Poll() {
 			continue
 		}
 
-		defer resp.Body.Close()
 		err = json.NewDecoder(resp.Body).Decode(&d.rtinfo)
 		if err != nil {
 			log.Printf("error reading response from %s: %v", d.endpoint, err)
 			continue
 		}
+		resp.Body.Close()
 
 		d.broadcast(d.rtinfo)
 
